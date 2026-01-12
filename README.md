@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">PS2 Launcher</h1>
   <p align="center">
-    <strong>Frontend minimalista para emulacion de PlayStation 2</strong>
+    <strong>Frontend para emulacion de PlayStation 2</strong>
   </p>
 </p>
 
@@ -15,7 +15,7 @@ PS2 Launcher es una interfaz grafica que permite gestionar y ejecutar juegos de 
 
 ## **Caracteristicas**
 
-- Interfaz minimalista con tema oscuro
+- Interfaz con tema oscuro
 - Deteccion automatica de controladores (DualSense, DualShock, Xbox, Switch Pro)
 - Integracion nativa con PCSX2
 - Sistema de registro de eventos (logging)
@@ -71,6 +71,16 @@ Ruta predeterminada de BIOS: `C:\Users\[Usuario]\Documents\PCSX2\bios`
 2. Ejecutar `ps2.bat` o `ps2.exe`
 3. Seleccionar el juego en la biblioteca
 4. Presionar **JUGAR**
+
+---
+
+## **Descarga de Juegos**
+
+Los archivos ISO de juegos de PS2 pueden descargarse desde:
+
+**https://www.gamesgx.net/**
+
+Una vez descargados, colocar los archivos `.iso` en la carpeta `roms/` del proyecto.
 
 ---
 
