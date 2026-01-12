@@ -1,90 +1,90 @@
 <p align="center">
   <h1 align="center">PS2 Launcher</h1>
   <p align="center">
-    <strong>Un launcher minimalista para PlayStation 2</strong>
-  </p>
-  <p align="center">
-    Interfaz moderna | Deteccion automatica de mandos | Integracion con PCSX2
+    <strong>Frontend minimalista para emulacion de PlayStation 2</strong>
   </p>
 </p>
 
 ---
 
+## **Descripcion**
+
+PS2 Launcher es una interfaz grafica que permite gestionar y ejecutar juegos de PlayStation 2 mediante el emulador PCSX2. Incluye deteccion automatica de controladores y configuracion optimizada.
+
+---
+
 ## **Caracteristicas**
 
-- **Interfaz minimalista** — Diseno limpio en blanco y negro
-- **Deteccion automatica de mandos** — DualSense, DualShock, Xbox, Switch Pro
-- **Integracion con PCSX2** — Lanza juegos directamente
-- **Sistema de logs** — Seguimiento de eventos y errores
-- **Configuracion simple** — Auto-detecta PCSX2 instalado
+- Interfaz minimalista con tema oscuro
+- Deteccion automatica de controladores (DualSense, DualShock, Xbox, Switch Pro)
+- Integracion nativa con PCSX2
+- Sistema de registro de eventos (logging)
+- Configuracion automatica del emulador
+
+---
+
+## **Requisitos del Sistema**
+
+| Componente | Especificacion |
+|------------|----------------|
+| Sistema Operativo | Windows 10/11 |
+| Python | 3.10 o superior |
+| PCSX2 | Incluido en el repositorio |
+| BIOS PS2 | Incluida en el repositorio |
 
 ---
 
 ## **Instalacion**
 
-### Requisitos previos
-
-| Requisito | Descripcion |
-|-----------|-------------|
-| **Python** | 3.10 o superior ([descargar](https://python.org)) |
-| **PCSX2** | Version 2.0+ ([descargar](https://pcsx2.net/downloads)) |
-| **BIOS PS2** | Requerida por PCSX2 (incluida en el repositorio) |
-
-### Pasos
-
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/Yokonad/PS2-Launcher.git
 cd PS2-Launcher
-
-# 2. Instalar dependencias
 install.bat
-
-# 3. Iniciar el launcher
-ps2.bat
 ```
+
+El script `install.bat` instalara las dependencias necesarias automaticamente.
 
 ---
 
 ## **Configuracion de BIOS**
 
-La BIOS esta incluida en la carpeta `bios/` del repositorio.
+El archivo de BIOS se encuentra en la carpeta `bios/` del repositorio.
 
-### Pasos para configurar:
+### Procedimiento:
 
-1. **Descomprime** el archivo `bios.zip` que esta en la carpeta `bios/`
-2. Abre **PCSX2**
-3. Ve a **Settings** → **BIOS**
-4. Haz clic en **"Abrir carpeta de BIOS"** o copia la ruta que aparece
-5. **Copia los archivos descomprimidos** a esa carpeta
-6. Haz clic en **"Actualizar lista"**
-7. Selecciona: **Europe v02.20 (04/02/2006)**
-8. Haz clic en **Aplicar**
+1. Descomprimir el archivo `bios.zip` ubicado en `bios/`
+2. Ejecutar PCSX2
+3. Acceder a **Settings** → **BIOS**
+4. Seleccionar **"Abrir carpeta de BIOS"**
+5. Copiar los archivos descomprimidos a dicha ubicacion
+6. Hacer clic en **"Actualizar lista"**
+7. Seleccionar **Europe v02.20 (04/02/2006)**
+8. Aplicar cambios
 
-> La ruta tipica de BIOS en PCSX2 es: `C:\Users\TuUsuario\Documents\PCSX2\bios`
+Ruta predeterminada de BIOS: `C:\Users\[Usuario]\Documents\PCSX2\bios`
 
 ---
 
 ## **Uso**
 
-1. **Agrega tus juegos** — Coloca archivos `.iso` en la carpeta `roms/`
-2. **Ejecuta el launcher** — Doble clic en `ps2.bat` o `ps2.exe`
-3. **Selecciona un juego** — Haz clic en el juego de la biblioteca
-4. **Juega** — Presiona el boton **JUGAR**
+1. Colocar archivos ISO en la carpeta `roms/`
+2. Ejecutar `ps2.bat` o `ps2.exe`
+3. Seleccionar el juego en la biblioteca
+4. Presionar **JUGAR**
 
 ---
 
-## **Mandos Soportados**
+## **Controladores Compatibles**
 
-| Mando | Deteccion |
-|-------|-----------|
-| PlayStation 5 DualSense | Automatica |
-| PlayStation 4 DualShock | Automatica |
-| Xbox Series X/S | Automatica |
-| Xbox One / 360 | Automatica |
-| Nintendo Switch Pro | Automatica |
+| Dispositivo | Estado |
+|-------------|--------|
+| PlayStation 5 DualSense | Soportado |
+| PlayStation 4 DualShock 4 | Soportado |
+| Xbox Series X/S | Soportado |
+| Xbox One / 360 | Soportado |
+| Nintendo Switch Pro Controller | Soportado |
 
-> Los mandos se configuran automaticamente al conectarlos. No requiere configuracion manual.
+La configuracion de controladores se realiza automaticamente al detectar el dispositivo.
 
 ---
 
@@ -92,51 +92,51 @@ La BIOS esta incluida en la carpeta `bios/` del repositorio.
 
 ```
 PS2-Launcher/
-├── install.bat       # Instalador de dependencias
-├── ps2.bat           # Iniciar launcher
-├── ps2.exe           # Ejecutable compilado
-├── bios/             # BIOS de PS2 (descomprimir)
-├── launcher/         # Codigo fuente
+├── install.bat       # Script de instalacion
+├── ps2.bat           # Ejecutar launcher
+├── ps2.exe           # Binario compilado
+├── bios/             # Archivos BIOS (descomprimir)
+├── launcher/
 │   ├── main.py       # Punto de entrada
-│   ├── core/         # Logica del launcher
+│   ├── core/         # Modulos principales
 │   └── gui/          # Interfaz grafica
-├── roms/             # Tus juegos (.iso)
+├── roms/             # Directorio de ISOs
 ├── logs/             # Registros del sistema
-└── config/           # Configuracion guardada
+└── config/           # Archivos de configuracion
 ```
 
 ---
 
-## **Configuracion de Video Recomendada**
+## **Configuracion Grafica Recomendada**
 
-Para la mejor calidad visual, configura en **PCSX2 → Settings → Graphics**:
+Ajustes optimos en PCSX2 → Settings → Graphics:
 
-| Opcion | Valor Recomendado |
-|--------|-------------------|
+| Parametro | Valor |
+|-----------|-------|
 | Renderer | Vulkan |
-| Internal Resolution | 4x Native (1440p) |
+| Internal Resolution | 4x Native |
 | Anisotropic Filtering | 16x |
-| MTVU | Activado |
-| Instant VU1 | Activado |
+| MTVU | Habilitado |
+| Instant VU1 | Habilitado |
 
 ---
 
 ## **Solucion de Problemas**
 
-| Problema | Solucion |
-|----------|----------|
-| PCSX2 no detectado | Ve a **Config** y selecciona la ruta manualmente |
-| No inicia el juego | Configura la BIOS en PCSX2 primero |
-| Mando no funciona | Conectalo antes de iniciar el juego |
+| Incidencia | Solucion |
+|------------|----------|
+| PCSX2 no detectado | Configurar ruta manualmente en Settings |
+| Error al iniciar juego | Verificar configuracion de BIOS |
+| Controlador no responde | Conectar antes de iniciar el juego |
 
 ---
 
 ## **Licencia**
 
-Este proyecto es de codigo abierto. Sientete libre de usarlo y modificarlo.
+Proyecto de codigo abierto. Uso y modificacion permitidos.
 
 ---
 
 <p align="center">
-  Hecho por <a href="https://github.com/Yokonad">Yokonad</a>
+  Desarrollado por <a href="https://github.com/Yokonad">Yokonad</a>
 </p>
