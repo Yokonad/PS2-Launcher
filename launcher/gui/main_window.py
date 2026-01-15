@@ -56,11 +56,17 @@ class PS2Launcher(ctk.CTk):
         
         # Inicializar componentes
         self.base_path = Path(__file__).parent.parent.parent
-        self.roms_path = self.base_path / "roms"
-        self.scanner = ROMScanner(str(self.roms_path))
         self.game_info = GameInfo()
         self.emulator = EmulatorManager(logger=self.logger)
         self.controller_config = ControllerConfig()
+        
+        # Cargar ruta de ROMs guardada o usar por defecto
+        saved_roms_path = self.emulator.settings.get('roms_path')
+        if saved_roms_path and Path(saved_roms_path).exists():
+            self.roms_path = Path(saved_roms_path)
+        else:
+            self.roms_path = self.base_path / "roms"
+        self.scanner = ROMScanner(str(self.roms_path))
         
         # Inicializar detector de gamepads
         self.gamepad_detector = GamepadDetector(logger=self.logger)
@@ -450,7 +456,9 @@ class PS2Launcher(ctk.CTk):
             fg_color=COLORS['text_primary'],
             hover_color=COLORS['accent_hover'],
             text_color=COLORS['bg_dark'],
-            corner_radius=4,
+            corner_radius=8,
+            border_width=2,
+            border_color=COLORS['accent'],
             command=self._launch_game
         )
         play_btn.pack(fill="x", pady=(20, 0), side="bottom")
@@ -549,7 +557,7 @@ class SettingsWindow(ctk.CTkToplevel):
         self.logger = logger
         
         self.title("Configuracion")
-        self.geometry("450x280")
+        self.geometry("500x320")
         self.resizable(False, False)
         self.configure(fg_color=COLORS['bg_dark'])
         
@@ -610,8 +618,11 @@ class SettingsWindow(ctk.CTkToplevel):
         )
         roms_label.pack(anchor="w", pady=(0, 4))
         
+        roms_frame = ctk.CTkFrame(container, fg_color="transparent")
+        roms_frame.pack(fill="x", pady=(0, 20))
+        
         self.roms_entry = ctk.CTkEntry(
-            container,
+            roms_frame,
             font=ctk.CTkFont(size=11),
             fg_color=COLORS['bg_medium'],
             border_color=COLORS['border'],
@@ -619,7 +630,19 @@ class SettingsWindow(ctk.CTkToplevel):
             height=34
         )
         self.roms_entry.insert(0, str(self.roms_path))
-        self.roms_entry.pack(fill="x", pady=(0, 20))
+        self.roms_entry.pack(side="left", fill="x", expand=True, padx=(0, 6))
+        
+        browse_roms_btn = ctk.CTkButton(
+            roms_frame,
+            text="...",
+            width=36,
+            height=34,
+            fg_color=COLORS['bg_light'],
+            hover_color=COLORS['bg_hover'],
+            text_color=COLORS['text_primary'],
+            command=self._browse_roms
+        )
+        browse_roms_btn.pack(side="right")
         
         btn_frame = ctk.CTkFrame(container, fg_color="transparent")
         btn_frame.pack(fill="x")
@@ -644,6 +667,7 @@ class SettingsWindow(ctk.CTkToplevel):
             fg_color=COLORS['text_primary'],
             hover_color=COLORS['accent_hover'],
             text_color=COLORS['bg_dark'],
+            corner_radius=8,
             command=self._save
         )
         save_btn.pack(side="right", fill="x", expand=True)
@@ -656,6 +680,14 @@ class SettingsWindow(ctk.CTkToplevel):
         if path:
             self.pcsx2_entry.delete(0, "end")
             self.pcsx2_entry.insert(0, path)
+    
+    def _browse_roms(self):
+        path = filedialog.askdirectory(
+            title="Seleccionar carpeta de ROMs"
+        )
+        if path:
+            self.roms_entry.delete(0, "end")
+            self.roms_entry.insert(0, path)
             
     def _auto_detect(self):
         if self.emulator.detect_pcsx2():
@@ -666,13 +698,33 @@ class SettingsWindow(ctk.CTkToplevel):
             messagebox.showwarning("Aviso", "No se encontro PCSX2")
             
     def _save(self):
+        # Guardar ruta de PCSX2
         pcsx2_path = self.pcsx2_entry.get()
         if pcsx2_path and pcsx2_path != "No configurado":
-            if self.emulator.set_pcsx2_path(pcsx2_path):
-                self.master._check_emulator()
-                self.destroy()
+            if not self.emulator.set_pcsx2_path(pcsx2_path):
+                messagebox.showerror("Error", "Ruta de PCSX2 invalida")
+                return
+        
+        # Guardar ruta de ROMs
+        roms_path = self.roms_entry.get()
+        if roms_path:
+            new_roms_path = Path(roms_path)
+            if new_roms_path.exists() and new_roms_path.is_dir():
+                # Actualizar la ruta en el launcher principal
+                self.master.roms_path = new_roms_path
+                self.master.scanner = ROMScanner(str(new_roms_path))
+                # Guardar en settings
+                self.emulator.settings['roms_path'] = str(new_roms_path)
+                self.emulator.save_settings()
+                # Recargar juegos
+                self.master._load_games()
+                self.logger.info(f"Carpeta de ROMs actualizada: {new_roms_path}")
             else:
-                messagebox.showerror("Error", "Ruta invalida")
+                messagebox.showerror("Error", "La carpeta de ROMs no existe")
+                return
+        
+        self.master._check_emulator()
+        self.destroy()
 
 
 class LogsWindow(ctk.CTkToplevel):
