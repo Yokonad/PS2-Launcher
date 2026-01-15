@@ -90,10 +90,6 @@ echo.
 echo   Siguiente paso: Configura la BIOS en PCSX2
 echo   (ver README.md para instrucciones)
 echo.
-
-set /p respuesta="Iniciar PS2 Launcher ahora? (s/n): "
-if /i "%respuesta%"=="s" (
-    start "" pythonw launcher/main.py
-)
-
+echo   Ejecuta ps2.bat para iniciar el launcher.
+echo.
 pause
