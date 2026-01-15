@@ -493,6 +493,10 @@ class PS2Launcher(ctk.CTk):
         try:
             gamepads = self.gamepad_detector.scan()
             self._update_gamepad_status(gamepads)
+            # Aplicar configuración automática si hay un mando conectado
+            if gamepads and self.gamepad_detector.active_gamepad:
+                if self.gamepad_detector.apply_pcsx2_config():
+                    self.logger.info("Configuración de mando aplicada automáticamente a PCSX2")
         except Exception as e:
             self.logger.error(f"Error detectando gamepads: {e}")
             
@@ -516,6 +520,9 @@ class PS2Launcher(ctk.CTk):
             
     def _on_gamepad_connected(self, gamepad):
         self.logger.info(f"Gamepad conectado: {gamepad.name}")
+        # Aplicar configuración automática a PCSX2
+        if self.gamepad_detector.apply_pcsx2_config():
+            self.logger.info("Configuración de mando aplicada automáticamente a PCSX2")
         self.after(0, lambda: self._update_gamepad_status())
         
     def _on_gamepad_disconnected(self):

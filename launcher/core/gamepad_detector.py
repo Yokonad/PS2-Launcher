@@ -360,6 +360,102 @@ class GamepadDetector:
                 
             time.sleep(2)  # Revisar cada 2 segundos
     
+    def apply_pcsx2_config(self, pcsx2_config_path: str = None) -> bool:
+        """
+        Aplica la configuración del mando detectado a PCSX2 automáticamente.
+        Modifica PCSX2.ini para usar el mando como DualShock2.
+        """
+        if not self.active_gamepad:
+            self._log_error("No hay gamepad activo para configurar")
+            return False
+        
+        # Buscar PCSX2.ini
+        import os
+        if pcsx2_config_path:
+            config_file = Path(pcsx2_config_path)
+        else:
+            # Buscar en ubicación por defecto
+            documents = Path(os.environ.get('USERPROFILE', '')) / 'Documents' / 'PCSX2' / 'inis' / 'PCSX2.ini'
+            if documents.exists():
+                config_file = documents
+            else:
+                self._log_error("No se encontró PCSX2.ini")
+                return False
+        
+        if not config_file.exists():
+            self._log_error(f"Archivo no encontrado: {config_file}")
+            return False
+        
+        self._log_info(f"Configurando mando en PCSX2: {self.active_gamepad.name}")
+        
+        # Mapeo estándar SDL para PCSX2 (compatible con todos los mandos modernos)
+        pad_config = """[Pad1]
+Type = DualShock2
+InvertL = 0
+InvertR = 0
+Deadzone = 0
+AxisScale = 1.33
+LargeMotorScale = 1
+SmallMotorScale = 1
+ButtonDeadzone = 0
+PressureModifier = 0.5
+Up = SDL-0/DPadUp
+Right = SDL-0/DPadRight
+Down = SDL-0/DPadDown
+Left = SDL-0/DPadLeft
+Triangle = SDL-0/FaceNorth
+Circle = SDL-0/FaceEast
+Cross = SDL-0/FaceSouth
+Square = SDL-0/FaceWest
+Select = SDL-0/Back
+Start = SDL-0/Start
+L1 = SDL-0/LeftShoulder
+L2 = SDL-0/+LeftTrigger
+R1 = SDL-0/RightShoulder
+R2 = SDL-0/+RightTrigger
+L3 = SDL-0/LeftStick
+R3 = SDL-0/RightStick
+LUp = SDL-0/-LeftY
+LRight = SDL-0/+LeftX
+LDown = SDL-0/+LeftY
+LLeft = SDL-0/-LeftX
+RUp = SDL-0/-RightY
+RRight = SDL-0/+RightX
+RDown = SDL-0/+RightY
+RLeft = SDL-0/-RightX
+Analog = SDL-0/Guide
+LargeMotor = SDL-0/LargeMotor
+SmallMotor = SDL-0/SmallMotor"""
+        
+        try:
+            # Leer el archivo
+            with open(config_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # Reemplazar sección [Pad1]
+            import re
+            # Buscar desde [Pad1] hasta la siguiente sección [
+            pattern = r'\[Pad1\].*?(?=\n\n\[|\Z)'
+            
+            if re.search(pattern, content, re.DOTALL):
+                # Reemplazar la sección existente
+                new_content = re.sub(pattern, pad_config, content, flags=re.DOTALL)
+            else:
+                # Agregar al final si no existe
+                new_content = content + "\n\n" + pad_config
+            
+            # Guardar el archivo
+            with open(config_file, 'w', encoding='utf-8') as f:
+                f.write(new_content)
+            
+            self._log_info(f"Configuración de mando aplicada a PCSX2")
+            self._log_info(f"Tipo: {get_controller_type_display_name(self.active_gamepad.controller_type)}")
+            return True
+            
+        except Exception as e:
+            self._log_error(f"Error aplicando configuración: {e}")
+            return False
+    
     def cleanup(self):
         """Limpia recursos"""
         self.stop_monitoring()
